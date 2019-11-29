@@ -1,0 +1,4 @@
+.env
+flaky_tests/*
+analysed_tests/*
+*.json

@@ -1,0 +1,25 @@
+#!/usr/bin/env ruby
+# frozen_string_literal: true
+
+require 'dotenv/load'
+
+require_relative '../lib/adapters/requesters/curl'
+require_relative '../lib/services/semaphore'
+require_relative '../lib/flaky_tests'
+
+requester =
+  SemaphoreRb::Adapters::Requesters::Curl.new(
+    api_key: ENV['API_KEY']
+  )
+
+semaphore_service =
+  SemaphoreRb::Services::Semaphore.new(
+    company: ENV['COMPANY'],
+    project_id: ENV['PROJECT_ID'],
+    requester: requester
+  )
+
+SemaphoreRb::FlakyTests.new(
+  semaphore_service,
+  max_pages: ENV['MAX_PAGES'].to_i
+).find_flaky_tests
